@@ -1,0 +1,895 @@
+﻿@model MedicalRecordApi.Models.BothEndocopyForm
+@{
+    Layout = null;
+}
+<link href="~/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/css/site.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+<meta name="viewport" content="width=2120">
+<style>
+    body {
+        margin: 20px;
+    }
+
+    .pdf-textbox {
+        display: block;
+        width: 100%;
+        min-height: 38px;
+        height: auto;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow: visible;
+    }
+
+    .card {
+        page-break-inside: avoid;
+    }
+</style>
+<form method="post" enctype="multipart/form-data" class="shadow-lg p-2 bg-white rounded-3">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <h1>Horizon Family Medical Group - Endoscopy Suite Post Procedure Record</h1>
+
+    <div class="card mb-3 shadow-lg">
+        <div class="card-body">
+            <h5 class="card-title">Patient / Procedure Header</h5>
+            <div class="row">
+                <div class="col-md-9 mb-2">
+                    <label class="form-label" for="PatientName">Patient Name</label>
+                    <input id="PatientName" name="PatientName" value="@Model.PreOp.PatientName" class="form-control" />
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="form-label" for="DOB">DOB</label>
+                    <input type="date" id="DOB" name="DOB" class="form-control"
+                           value="@(Model.PreOp.DOB.HasValue? Model.PreOp.DOB.Value.ToString("yyyy-MM-dd") : "")" />
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 mb-2">
+                    <label class="form-label" for="ProcedureDate">Procedure Date</label>
+                    <input id="ProcedureDate" name="ProcedureDate" type="date"
+                           value="@(Model.PreOp.ProcedureDate.HasValue? Model.PreOp.ProcedureDate.Value.ToString("yyyy-MM-dd") : "")"
+                           class="form-control" />
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label class="form-label" for="TimeIn">Time In</label>
+                    <input id="TimeIn" name="TimeIn" type="time"
+                           value="@(Model.PreOp.TimeIn.HasValue? Model.PreOp.TimeIn.Value.ToString(@"hh\:mm") : "")"
+                           class="form-control" />
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label class="form-label" for="ProcedureRoom">Procedure Room Number</label>
+                    <input id="ProcedureRoom" name="ProcedureRoom" value="@Model.PreOp.ProcedureRoom" class="form-control" />
+                </div>
+            </div>
+
+
+
+            <div class="row">
+                <div class="col-md-4 mb-2">
+                    <label class="form-label" for="ReferringPhysician">Physician</label>
+                    <input id="ReferringPhysician" name="ReferringPhysician" value="@Model.PreOp.ReferringPhysician" class="form-control" />
+                </div>
+
+                <div class="col-md-4 mb-2">
+                    <label class="form-label" for="Anesthesiologist">Anesthesiologist</label>
+                    <input id="Anesthesiologist" name="Anesthesiologist" value="@Model.PreOp.Anesthesiologist" class="form-control" />
+                </div>
+
+                <div class="col-md-4 mb-2">
+                    <label class="form-label" for="Assistant">Procedure Assistant</label>
+                    <input id="Assistant" name="Assistant" value="@Model.PreOp.Assistant" class="form-control" />
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-4 mb-2">
+                    <label class="form-label" for="NPOSince">NPO Since</label>
+                    <input id="NPOSince" name="NPOSince" value="@Model.PreOp.NPOSince" class="form-control" />
+                </div>
+                <div class="col-md-4 mb-2">
+                    <label class="form-label" for="PrepTaken">Prep Taken</label>
+                    <input id="PrepTaken" name="PrepTaken" value="@Model.PreOp.PrepTaken" class="form-control" />
+                </div>
+            </div>
+
+
+
+            <div class="row g-3">
+                <div class="col-md-4 col-12">
+                    <label class="form-label">Glasses Removed</label><br />
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="GlassesRemoved" value="Yes" @(Model.PreOp.GlassesRemoved == "Yes" ? "checked" : "") />
+                        <label class="form-check-label">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="GlassesRemoved" value="No" @(Model.PreOp.GlassesRemoved == "No" ? "checked" : "") />
+                        <label class="form-check-label">No</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="GlassesRemoved" value="NA" @(Model.PreOp.GlassesRemoved == "NA" ? "checked" : "") />
+                        <label class="form-check-label">N/A</label>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-12">
+                    <label class="form-label">Dentures Removed</label><br />
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="DenturesRemoved" value="Yes" @(Model.PreOp.DenturesRemoved == "Yes" ? "checked" : "") />
+                        <label class="form-check-label">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="DenturesRemoved" value="No" @(Model.PreOp.DenturesRemoved == "No" ? "checked" : "") />
+                        <label class="form-check-label">No</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="DenturesRemoved" value="NA" @(Model.PreOp.DenturesRemoved == "NA" ? "checked" : "") />
+                        <label class="form-check-label">N/A</label>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-12">
+                    <label class="form-label">Pregnancy Verified</label><br />
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="PregnancyVerified" value="Yes" @(Model.PreOp.PregnancyVerified == "Yes" ? "checked" : "") />
+                        <label class="form-check-label">Yes</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="PregnancyVerified" value="No" @(Model.PreOp.PregnancyVerified == "No" ? "checked" : "") />
+                        <label class="form-check-label">No</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="PregnancyVerified" value="NA" @(Model.PreOp.PregnancyVerified == "NA" ? "checked" : "") />
+                        <label class="form-check-label">N/A</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <label class="form-label" for="PreOpDiagnosis">Pre-op Diagnosis / Indication</label>
+                @* <textarea id="PreOpDiagnosis" name="PreOpDiagnosis" class="form-control" rows="3">@Model.PreOp.PreOpDiagnosis</textarea> *@
+                <div id="PreOpDiagnosis" class="pdf-textbox">@Model.PreOp.PreOpDiagnosis</div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="btnStart" class="card mb-3 shadow-lg">
+        <div class="card-body">
+            <h5 class="card-title">Time Out Completed</h5>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-semibold">Procedure:</label>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label">Procedure Start Time:</label>
+                            <input id="ProcedureStart" name="ProcedureStart" type="time" class="form-control" value="@Model.PreOp.ProcedureStart" />
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <label class="form-label">Procedure Stop Time:</label>
+                            <input id="ProcedureStop" name="ProcedureStop" type="time" class="form-control" value="@Model.PreOp.ProcedureStop" />
+                        </div>
+                    </div>
+                    <div>
+                        <input type="checkbox" id="ProcedureConcur" name="ProcedureConcur" class="form-check-input" checked />
+                        <p class="small text-muted mb-0">
+                            The surgeon/proceduralist and the licensed or qualified anesthesia professional concur on the appropriateness of the procedures performed at the facility based on the medical status of the patient, age and physiological appropriateness of the patient, and qualifications of the providers and the facility resources.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="form-check">
+                            <input type="checkbox" name="CorrectPatient" class="form-check-input" @(Model.PreOp.CorrectPatient ? "checked" : "") />
+                            <label class="form-check-label">Correct Patient (Name/DOB)</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="CorrectProcedure" class="form-check-input" @(Model.PreOp.CorrectProcedure ? "checked" : "") />
+                            <label class="form-check-label">Correct Procedure</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="AllergiesVerified" class="form-check-input" @(Model.PreOp.AllergiesVerified ? "checked" : "") />
+                            <label class="form-check-label">Allergies Verified</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="VerifiedWithStaff" class="form-check-input" @(Model.PreOp.VerifiedWithStaff ? "checked" : "") />
+                            <label class="form-check-label">Verified w/ Physician, Anesthesiologist & Clinical Staff</label>
+                        </div>
+                    </div>
+
+                    <hr class="my-2" />
+
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="form-check">
+                            <input type="checkbox" name="IsEGD" class="form-check-input" @(Model.PreOp.IsEGD ? "checked" : "") />
+                            <label class="form-check-label">EGD</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="IsColonoscopy" class="form-check-input" @(Model.PreOp.IsColonoscopy ? "checked" : "") />
+                            <label class="form-check-label">COLON</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="IsFlexSig" class="form-check-input" @(Model.PreOp.IsFlexSig ? "checked" : "") />
+                            <label class="form-check-label">FLEX SIG</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" name="IsBanding" class="form-check-input" @(Model.PreOp.IsBanding ? "checked" : "") />
+                            <label class="form-check-label">W/BANDING</label>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <label class="form-label">Endoscope ID:</label>
+                        <input type="text" name="EndoscopeId" class="form-control mb-2" value="@Model.PreOp.EndoscopeId" />
+
+                        <label class="form-label">Cautery Settings:</label>
+                        <div class="d-flex align-items-center gap-2 flex-wrap">
+                            <span>N/A</span>
+                            <input type="checkbox" name="CauteryNA" class="form-check-input" @(Model.PreOp.CauteryNA ? "checked" : "") />
+                            <span>Cut</span>
+                            <input type="text" name="CauteryCut" class="form-control form-control-sm" style="width:70px;" value="@Model.PreOp.CauteryCut" />
+                            <span>Co</span>
+                            <input type="text" name="CauteryCo" class="form-control form-control-sm" style="width:70px;" value="@Model.PreOp.CauteryCo" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-3" />
+
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Number of Specimens:</label>
+                    <input type="number" name="SpecimenCount" class="form-control" style="width:70px;" value="@Model.PreOp.SpecimenCount" />
+                </div>
+                <div class="col-md-12 mb-2">
+                    <label class="form-label">Post Op Diagnosis</label>
+                    @* <textarea name="ProcedureNotes" class="form-control" rows="2">@Model.PreOp.ProcedureNotes</textarea> *@
+                    <div class="pdf-textbox">@Model.PreOp.ProcedureNotes</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-lg mb-3">
+        <div class="card-body">
+            <h5 class="card-title mb-3">IV Therapy / Anesthesia / Monitors</h5>
+
+            <!-- IV Therapy Section -->
+            <div class="mb-3">
+                <label class="form-label me-3">IV Therapy:</label>
+                <div class="d-flex flex-wrap align-items-center gap-3">
+
+                    <!-- IV None -->
+                    <div class="d-inline-flex align-items-center">
+                        <input type="checkbox" id="IVNone" name="IVNone" class="form-check-input me-2" @(Model.PreOp.IVNone ? "checked" : "") />
+                        <label class="form-check-label mb-0" for="IVNone">None</label>
+                    </div>
+
+                    <!-- IV Site -->
+                    <div class="d-inline-flex align-items-center">
+                        <input type="checkbox" id="IVStarted" name="IVStarted" class="form-check-input me-2" @(Model.PreOp.IVStarted ? "checked" : "") />
+                        <label class="form-check-label mb-0 me-2" for="IVStarted">IV Site</label>
+                        <input type="text" id="IVSite" name="IVSite" class="form-control" style="width: 150px;" value="@Model.PreOp.IVSite" />
+                    </div>
+
+                    <!-- LiB -->
+                    <div class="d-inline-flex align-items-center">
+                        <label class="form-check-label mb-0 me-2" for="LiB">LiB</label>
+                        <input type="text" id="LiBInput" name="LiBInput" class="form-control" style="width: 150px;" value="@Model.PreOp.LiB" />
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Nurses Notes + Right Section -->
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <label class="form-label" for="NursingNotes">Nurses Notes:</label>
+                    @* <textarea id="NursingNotes" name="NursingNotes" rows="5" class="form-control">@Model.PreOp.NursingNotes</textarea> *@
+                    <div id="NursingNotes" class="pdf-textbox">@Model.PreOp.NursingNotes</div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Anesthesia:</label><br />
+                    <div class="form-check form-check-inline">
+                        <input type="checkbox" id="AnesthesiaTIVA" name="AnesthesiaTIVA" class="form-check-input" @(Model.PreOp.AnesthesiaTIVA ? "checked" : "") />
+                        <label class="form-check-label" for="AnesthesiaTIVA">TIVA</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="checkbox" id="AnesthesiaConsciousSedation" name="AnesthesiaConsciousSedation" class="form-check-input" @(Model.PreOp.AnesthesiaConsciousSedation ? "checked" : "") />
+                        <label class="form-check-label" for="AnesthesiaConsciousSedation">Conscious Sedation</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="checkbox" id="AnesthesiaGA" name="AnesthesiaGA" class="form-check-input" @(Model.PreOp.AnesthesiaGA ? "checked" : "") />
+                        <label class="form-check-label" for="AnesthesiaGA">GA</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input type="checkbox" id="AnesthesiaNone" name="AnesthesiaNone" class="form-check-input" @(Model.PreOp.AnesthesiaNone ? "checked" : "") />
+                        <label class="form-check-label" for="AnesthesiaNone">NONE</label>
+                    </div>
+
+                    <div class="mt-2">
+                        <label class="form-label">Monitors:</label><br />
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" id="MonitorEKG" name="MonitorEKG" class="form-check-input" @(Model.PreOp.MonitorEKG ? "checked" : "") />
+                            <label class="form-check-label" for="MonitorEKG">EKG</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" id="MonitorETCO2" name="MonitorETCO2" class="form-check-input" @(Model.PreOp.MonitorETCO2 ? "checked" : "") />
+                            <label class="form-check-label" for="MonitorETCO2">ETCO2</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" id="MonitorNIBP" name="MonitorNIBP" class="form-check-input" @(Model.PreOp.MonitorNIBP ? "checked" : "") />
+                            <label class="form-check-label" for="MonitorNIBP">NIBP</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input type="checkbox" id="MonitorPulseOx" name="MonitorPulseOx" class="form-check-input" @(Model.PreOp.MonitorPulseOx ? "checked" : "") />
+                            <label class="form-check-label" for="MonitorPulseOx">PULSE OXIMETER</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vitals -->
+            <div class="mt-3 border-top pt-3">
+                <label class="form-label">Vital Signs:</label>
+                <div class="d-flex align-items-center flex-wrap">
+                    <label class="me-2">B/P</label>
+                    <input type="text" id="BP" name="BP" class="form-control d-inline-block me-3" style="width: 100px;" value="@Model.PreOp.BP" />
+                    <label class="me-2">HR</label>
+                    <input type="text" id="HR" name="HR" class="form-control d-inline-block me-3" style="width: 100px;" value="@Model.PreOp.HR" />
+                    <label class="me-2">Resp</label>
+                    <input type="text" id="RespRate" name="RespRate" class="form-control d-inline-block me-3" style="width: 100px;" value="@Model.PreOp.RespRate" />
+                    <label class="me-2">O2 Sat</label>
+                    <input type="text" id="SpO2" name="SpO2" class="form-control d-inline-block me-3" style="width: 100px;" value="@Model.PreOp.SpO2" />
+                    <label class="me-2">Oxygen</label>
+                    <input type="text" id="Oxygen" name="Oxygen" class="form-control d-inline-block" style="width: 150px;" value="@Model.PreOp.Oxygen" />
+                </div>
+            </div>
+
+            <!-- Discharge and Photos -->
+            <div class="mt-3">
+                <label class="form-label me-2">Discharge to PACU Time:</label>
+                <input type="time" id="PACUTransferTime" name="PACUTransferTime" class="form-control d-inline-block me-4" style="width: 160px;" value="@Model.PreOp.PACUTransferTime" />
+
+                <label class="form-label me-2">Photos on File:</label>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" id="PhotosOnFileYes" name="PhotosOnFile" class="form-check-input" value="true" @(Model.PreOp.PhotosOnFile ? "checked" : "") />
+                    <label class="form-check-label" for="PhotosOnFileYes">Yes</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" id="PhotosOnFileNo" name="PhotosOnFile" class="form-check-input" value="false" @(Model.PreOp.PhotosOnFile == false ? "checked" : "") />
+                    <label class="form-check-label" for="PhotosOnFileNo">No</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+
+<form method="post" enctype="multipart/form-data" class="shadow-lg p-2 bg-white rounded-3">
+    
+    <div class="shadow-lg p-5 bg-white rounded-3">
+        <h5 class="fw-bold text-center mb-3">
+            Horizon Family Medical Group – Endoscopy Suite Post Procedure Record
+        </h5>
+
+        <div class="col-md-5 mb-2">
+            <label for="AccNo">Acc No</label>
+            <input value="@Model.PostOp.AccNo" type="text" id="AccNo" name="AccNo" class="form-control" />
+            <p class="mb-0 mt-1" id="loadingAccNo"></p>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <label for="PatientName" class="form-label">Patient</label>
+                <input value="@Model.PostOp.Patient" id="PatientName" name="Patient" class="form-control" />
+            </div>
+            <div class="col-md-6">
+                <label for="DOB" class="form-label">Date of Birth</label>
+                <input value="@(Model.PostOp.DateOfBirth.HasValue ? Model.PostOp.DateOfBirth.Value.ToString("yyyy-MM-dd") : "" )"
+                id="DOB" 
+                name="DateOfBirth" 
+                type="date" 
+                class="form-control" />
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label for="AdmissionDate" class="form-label">Admission Date</label>
+                <input type="date"
+                       id="AdmissionDate"
+                       name="AdmissionDate"
+                       class="form-control"
+                       value="@(Model.PostOp.AdmissionDate.HasValue? Model.PostOp.AdmissionDate.Value.ToString("yyyy-MM-dd") : "")" />
+            </div>
+
+            <div class="col-md-4">
+                <label for="AdmissionTime" class="form-label">Admission Time</label>
+                <input type="time"
+                       id="AdmissionTime"
+                       name="AdmissionTime"
+                       class="form-control"
+                       value="@(Model.PostOp.AdmissionTime.HasValue
+                                  ? Model.PostOp.AdmissionTime.Value.ToString(@"hh\:mm")
+                                  : "")" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Operative Procedure</label><br />
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="OperativeProcedure" value="EGD"
+                           @(Model.PostOp.OperativeProcedure == "EGD" ? "checked" : "") />
+                    <label class="form-check-label">EGD</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="OperativeProcedure" value="Colon"
+                           @(Model.PostOp.OperativeProcedure == "Colon" ? "checked" : "") />
+                    <label class="form-check-label">Colon</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="OperativeProcedure" value="Flex Sig"
+                           @(Model.PostOp.OperativeProcedure == "Flex Sig" ? "checked" : "") />
+                    <label class="form-check-label">Flex Sig</label>
+                </div>
+            </div>
+        </div>
+
+
+        <hr />
+
+        <div class="row mb-2">
+            <div class="col-md-12">
+                <label class="fw-bold">Pre-op Vitals sign:</label>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-2">
+                <label for="BP" class="form-label">BP</label>
+                <input value="@Model.PostOp.BP" id="BP" name="BP" class="form-control" />
+            </div>
+
+            <div class="col-md-2">
+                <label for="HeartRate" class="form-label">Heart Rate</label>
+                <input value="@Model.PostOp.HeartRate" id="HeartRate" name="HeartRate" class="form-control" />
+            </div>
+
+            <div class="col-md-2">
+                <label for="Respiration" class="form-label">Respiration</label>
+                <input value="@Model.PostOp.Respiration" id="Respiration" name="Respiration" class="form-control" />
+            </div>
+
+            <div class="col-md-2">
+                <label for="O2Sat" class="form-label">O₂ Sat</label>
+                <input value="@Model.PostOp.O2Sat" id="O2Sat" name="O2Sat" class="form-control" />
+            </div>
+
+            <div class="col-md-4">
+                <label for="On" class="form-label">On</label>
+                <input value="@Model.PostOp.On" id="On" name="On" class="form-control" />
+            </div>
+        </div>
+
+
+        <hr />
+
+        <div class="row mb-2">
+            <div class="col-md-12">
+                <label class="fw-bold">IV Therapy:</label>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <label for="IVAmtOnAdmission" class="form-label">IV Amt On Admission</label>
+                <div class="input-group">
+                    <input value="@Model.PostOp.IVAmtOnAdmission"
+                           id="IVAmtOnAdmission"
+                           name="IVAmtOnAdmission"
+                           class="form-control" />
+                    <span class="input-group-text">mL</span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label for="TotalInfused" class="form-label">Total Infused</label>
+                <div class="input-group">
+                    <input value="@Model.PostOp.TotalInfused"
+                           id="TotalInfused"
+                           name="TotalInfused"
+                           class="form-control" />
+                    <span class="input-group-text">mL</span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <label for="TimeSiteDC" class="form-label">Time Site DC</label>
+                <input value="@Model.PostOp.TimeSiteDC"
+                       id="TimeSiteDC"
+                       name="TimeSiteDC"
+                       class="form-control" />
+            </div>
+        </div>
+
+        <h5 class="fw-bold mt-4">Assessment and Monitoring</h5>
+
+
+        <table class="table table-bordered text-center align-middle" id="monitoringTable">
+            <thead class="table-light">
+                <tr>
+                    <th>Time</th>
+                    <th>B/P</th>
+                    <th>Pulse</th>
+                    <th>Resp</th>
+                    <th>O₂</th>
+                    <th>O₂ Sat</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.PostOp.MonitoringRows.Count; i++)
+                {
+                    <tr>
+                        <td>@(Model.PostOp.MonitoringRows[i].Time ?? "-")</td>
+                        <td>@(Model.PostOp.MonitoringRows[i].BP ?? "-")</td>
+                        <td>@(Model.PostOp.MonitoringRows[i].Pulse ?? "-")</td>
+                        <td>@(Model.PostOp.MonitoringRows[i].Resp ?? "-")</td>
+                        <td>@(Model.PostOp.MonitoringRows[i].O2 ?? "-")</td>
+                        <td>@(Model.PostOp.MonitoringRows[i].O2Sat ?? "-")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="row mb-3">
+            <div class="col-md-3">
+                <label>Abdomen Soft</label>
+                <input type="radio" name="AbdomenSoft" value="true"
+                       @(Model.PostOp.AbdomenSoft == true ? "checked" : "") /> Yes
+                <input type="radio" name="AbdomenSoft" value="false"
+                       @(Model.PostOp.AbdomenSoft == false ? "checked" : "") /> No
+            </div>
+
+            <div class="col-md-3">
+                <label>Passing Flatus</label>
+                <input type="radio" name="PassingFlatus" value="true"
+                       @(Model.PostOp.PassingFlatus == true ? "checked" : "") /> Yes
+                <input type="radio" name="PassingFlatus" value="false"
+                       @(Model.PostOp.PassingFlatus == false ? "checked" : "") /> No
+            </div>
+
+            <div class="col-md-3">
+                <label>Nausea/Vomiting</label>
+                <input type="radio" name="NauseaVomiting" value="true"
+                       @(Model.PostOp.NauseaVomiting == true ? "checked" : "") /> Yes
+                <input type="radio" name="NauseaVomiting" value="false"
+                       @(Model.PostOp.NauseaVomiting == false ? "checked" : "") /> No
+            </div>
+
+            <div class="col-md-3">
+                <label>Oral Fluids Tolerated</label>
+                <input type="radio" name="OralFluidsTolerated" value="true"
+                       @(Model.PostOp.OralFluidsTolerated == true ? "checked" : "") /> Yes
+                <input type="radio" name="OralFluidsTolerated" value="false"
+                       @(Model.PostOp.OralFluidsTolerated == false ? "checked" : "") /> No
+            </div>
+        </div>
+
+
+        <div class="mb-3">
+            <label for="Notes" class="form-label">Notes / Remarks</label>
+            @* <textarea id="Notes" name="Notes" class="form-control" rows="2">@Model.PostOp.Notes</textarea> *@
+            <div id="Notes" class="pdf-textbox">@Model.PostOp.Notes</div>
+        </div>
+
+        <h5 class="fw-bold mt-4">Post-Op Assessment of Pain</h5>
+        <div class="row mb-3">
+            <div class="col-md-2">
+                <label for="PainLevel" class="form-label">Pain Level (0–10)</label>
+                <input type="number" value="@Model.PostOp.PainLevel" id="PainLevel" name="PainLevel" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label for="Location" class="form-label">Location</label>
+                <input value="@Model.PostOp.Location" id="Location" name="Location" class="form-control" />
+            </div>
+            <div class="col-md-4">
+                <label for="Description" class="form-label">Description</label>
+                <input value="@Model.PostOp.Description" id="Description" name="Description" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label for="Action" class="form-label">Action</label>
+                <input value="@Model.PostOp.Action" id="Action" name="Action" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label for="Reassessment" class="form-label">Reassessment</label>
+                <input value="@Model.PostOp.Reassessment" id="Reassessment" name="Reassessment" class="form-control" />
+            </div>
+        </div>
+
+
+        <!-- Aldrete Score Section -->
+        <h4 class="mt-4 mb-3">Aldrete Score</h4>
+
+        <table class="table table-bordered text-center align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 30%;">Aldrette Score</th>
+                    <th></th>
+                    <th style="width: 15%;">Ad</th>
+                    <th style="width: 15%;">10 min</th>
+                    <th style="width: 15%;">20 min</th>
+                    <th style="width: 15%;">D/C</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-start">Able to move 4 extremities, able to move 2 extremities, able to move 0 extremities</td>
+                    <td class="text-start">Activity</td>
+                    <td>@(Model.PostOp.Aldrete?.ActivityAd?.ToString() ?? "-")</td>
+                    <td>@(Model.PostOp.Aldrete?.Activity10?.ToString() ?? "-")</td>
+                    <td>@(Model.PostOp.Aldrete?.Activity20?.ToString() ?? "-")</td>
+                    <td>@(Model.PostOp.Aldrete?.ActivityDC?.ToString() ?? "-")</td>
+                </tr>
+                <tr>
+                    <td class="text-start">Able to deep breathe & cough, dyspnea or limited breathing, unresponsive</td>
+                    <td class="text-start">Respiration</td>
+                    <td>@(Model.PostOp.Aldrete?.RespirationAd?.ToString() ?? "-")</td>
+                    <td>@(Model.PostOp.Aldrete?.Respiration10?.ToString() ?? "-")</td>
+                    <td>@(Model.PostOp.Aldrete?.Respiration20?.ToString() ?? "-")</td>
+                    <td>@(Model.PostOp.Aldrete?.RespirationDC?.ToString() ?? "-")</td>
+                </tr>
+                <tr>
+                    <td class="text-start">Fully awake, arousable</td>
+                    <td class="text-start">Consciousness</td>
+                    <td>@(Model.PostOp.Aldrete?.ConsciousnessAd?.ToString() ?? "-")</td>
+                    <td>@(Model.PostOp.Aldrete?.Consciousness10?.ToString() ?? "-")</td>
+                    <td>@(Model.PostOp.Aldrete?.Consciousness20?.ToString() ?? "-")</td>
+                    <td>@(Model.PostOp.Aldrete?.ConsciousnessDC?.ToString() ?? "-")</td>
+                </tr>
+                <tr>
+                    <td class="text-start">&gt; 92% on room air, &gt; 90% with O₂, less than 90% with O₂</td>
+                    <td class="text-start">Oxygen Saturation</td>
+                    <td>@(Model.PostOp.Aldrete?.O2SatAd?.ToString() ?? "-")</td>
+                    <td>@(Model.PostOp.Aldrete?.O2Sat10?.ToString() ?? "-")</td>
+                    <td>@(Model.PostOp.Aldrete?.O2Sat20?.ToString() ?? "-")</td>
+                    <td>@(Model.PostOp.Aldrete?.O2SatDC?.ToString() ?? "-")</td>
+                </tr>
+                <tr>
+                    <td class="text-start">B/P ±20 of pre-op level, ±20–50, ±50 of pre-op level</td>
+                    <td class="text-start">Circulation</td>
+                    <td>@(Model.PostOp.Aldrete?.CirculationAd?.ToString() ?? "-")</td>
+                    <td>@(Model.PostOp.Aldrete?.Circulation10?.ToString() ?? "-")</td>
+                    <td>@(Model.PostOp.Aldrete?.Circulation20?.ToString() ?? "-")</td>
+                    <td>@(Model.PostOp.Aldrete?.CirculationDC?.ToString() ?? "-")</td>
+                </tr>
+            </tbody>
+            <tfoot class="table-light">
+                <tr>
+                    <th>Score of 8 or above required for discharge</th>
+                    <th class="text-end">Total:</th>
+
+                    <th>
+                        @{
+                            var totalAd =
+                            (Model.PostOp.Aldrete?.ActivityAd ?? 0) +
+                            (Model.PostOp.Aldrete?.RespirationAd ?? 0) +
+                            (Model.PostOp.Aldrete?.ConsciousnessAd ?? 0) +
+                            (Model.PostOp.Aldrete?.O2SatAd ?? 0) +
+                            (Model.PostOp.Aldrete?.CirculationAd ?? 0);
+                        }
+                        @totalAd
+                    </th>
+
+                    <th>
+                        @{
+                            var total10 =
+                            (Model.PostOp.Aldrete?.Activity10 ?? 0) +
+                            (Model.PostOp.Aldrete?.Respiration10 ?? 0) +
+                            (Model.PostOp.Aldrete?.Consciousness10 ?? 0) +
+                            (Model.PostOp.Aldrete?.O2Sat10 ?? 0) +
+                            (Model.PostOp.Aldrete?.Circulation10 ?? 0);
+                        }
+                        @total10
+                    </th>
+
+                    <th>
+                        @{
+                            var total20 =
+                            (Model.PostOp.Aldrete?.Activity20 ?? 0) +
+                            (Model.PostOp.Aldrete?.Respiration20 ?? 0) +
+                            (Model.PostOp.Aldrete?.Consciousness20 ?? 0) +
+                            (Model.PostOp.Aldrete?.O2Sat20 ?? 0) +
+                            (Model.PostOp.Aldrete?.Circulation20 ?? 0);
+                        }
+                        @total20
+                    </th>
+
+                    <th>
+                        @{
+                            var totalDC =
+                            (Model.PostOp.Aldrete?.ActivityDC ?? 0) +
+                            (Model.PostOp.Aldrete?.RespirationDC ?? 0) +
+                            (Model.PostOp.Aldrete?.ConsciousnessDC ?? 0) +
+                            (Model.PostOp.Aldrete?.O2SatDC ?? 0) +
+                            (Model.PostOp.Aldrete?.CirculationDC ?? 0);
+                        }
+                        @totalDC
+                    </th>
+                </tr>
+            </tfoot>
+
+        </table>
+
+
+
+
+
+
+
+        <h4 class="mt-5 mb-3">Nursing and Discharge Summary</h4>
+
+        <!-- Medication Table -->
+        <table class="table table-bordered align-middle text-center" id="medicationTable">
+            <thead class="table-light">
+                <tr>
+                    <th>Time</th>
+                    <th>Medication</th>
+                    <th>Route</th>
+                    <th>Nurse</th>
+                    <th>Response</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.PostOp.NursingMedications != null && Model.PostOp.NursingMedications.Any())
+                {
+                    @for (int i = 0; i < Model.PostOp.NursingMedications.Count; i++)
+                    {
+                        <tr>
+                            <td>@(Model.PostOp.NursingMedications[i].Time ?? "-")</td>
+                            <td>@(Model.PostOp.NursingMedications[i].Medication ?? "-")</td>
+                            <td>@(Model.PostOp.NursingMedications[i].Route ?? "-")</td>
+                            <td>@(Model.PostOp.NursingMedications[i].Nurse ?? "-")</td>
+                            <td>@(Model.PostOp.NursingMedications[i].Response ?? "-")</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5">No medication records available</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Notes & Orders -->
+        <div class="mt-3">
+            <label for="NursingNotes"><strong>Nursing Notes:</strong></label>
+            @* <textarea id="NursingNotes"
+                      name="NursingNotes"
+                      class="form-control"
+                      rows="2">@Model.PostOp.NursingNotes</textarea> *@
+            <div id="NursingNotesPostOp" class="pdf-textbox">@Model.PostOp.NursingNotes</div>
+        </div>
+
+        <div class="mt-3">
+            <label for="AdditionalOrders"><strong>Additional Orders:</strong></label>
+            @* <textarea id="AdditionalOrders"
+                      name="AdditionalOrders"
+                      class="form-control"
+                      rows="2">@Model.PostOp.AdditionalOrders</textarea> *@
+            <div id="AdditionalOrders" class="pdf-textbox">@Model.PostOp.AdditionalOrders</div>
+        </div>
+
+        <!-- Discharge Section -->
+      <div class="mt-4 border rounded p-3">
+
+    <!-- Physician + Date -->
+    <div class="row mb-2">
+        <div class="col-md-6">
+            <label>Physician:</label>
+            <select name="PhysicianName" id="ReferringPhysician" class="form-select">
+                        <option selected value="@(Model.PostOp.PhysicianName)">@(Model.PostOp.PhysicianName)</option>
+             </select>
+        </div>
+
+        <div class="col-md-6">
+            <label>Date:</label>
+            <input type="date"
+                   id="PhysicianDate"
+                   name="PhysicianDate"
+                   value="@Model.PostOp.PhysicianDate?.ToString("yyyy-MM-dd")"
+                   class="form-control" />
+        </div>
+    </div>
+
+    <!-- Radio Button Section -->
+    <div class="row mb-2">
+        <div class="col-md-4">
+            <label>Discharge Criteria Met:</label><br />
+            <input type="radio" name="DischargeCriteriaMet" value="true"
+                @(Model.PostOp.DischargeCriteriaMet == true ? "checked" : "") /> Yes
+            <input type="radio" name="DischargeCriteriaMet" value="false"
+                @(Model.PostOp.DischargeCriteriaMet == false ? "checked" : "") /> No
+        </div>
+
+        <div class="col-md-4">
+            <label>Stable Vital Signs:</label><br />
+            <input type="radio" name="StableVitalSigns" value="true"
+                @(Model.PostOp.StableVitalSigns == true ? "checked" : "") /> Yes
+            <input type="radio" name="StableVitalSigns" value="false"
+                @(Model.PostOp.StableVitalSigns == false ? "checked" : "") /> No
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-check-label">Assessed and medically cleared for discharge by Anesthesiologist:</label><br />
+            <input type="radio" name="ClearedByAnesthesiologist" value="true"
+                @(Model.PostOp.ClearedByAnesthesiologist == true ? "checked" : "")
+                class="form-check-input" /> 
+        </div>
+    </div>
+
+    <!-- Instructions + By who -->
+    <div class="row mb-2">
+        <div class="col-md-6">
+            <label class="form-check-label">Discharge instructions reviewed and verbal understanding confirmed:</label><br />
+            <input type="radio" name="InstructionsReviewed" value="true"
+                @(Model.PostOp.InstructionsReviewed == true ? "checked" : "")
+                class="form-check-input" /> By:
+            <input name="InstructionsReviewedBy" id="InstructionsReviewedBy"
+                   value="@Model.PostOp.InstructionsReviewedBy"
+                   class="form-control d-inline-block w-50" />
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-check-label">Post-Op written instructions given to patient and/or responsible party:</label><br />
+            <input type="radio" name="PostOpInstructionsGiven" value="true"
+                @(Model.PostOp.PostOpInstructionsGiven == true ? "checked" : "")
+                class="form-check-input" /> By:
+            <input name="PostOpInstructionsGivenBy" id="PostOpInstructionsGivenBy"
+                   value="@Model.PostOp.PostOpInstructionsGivenBy"
+                   class="form-control d-inline-block w-50" />
+        </div>
+    </div>
+
+    <!-- Discharge Type + Time -->
+    <div class="row">
+        <div class="col-md-6">
+            <label>Patient Discharged:</label><br />
+            <input type="radio" name="PatientDischargeType" value="Home"
+                @(Model.PostOp.PatientDischargeType == "Home" ? "checked" : "") /> Home
+            <input type="radio" name="PatientDischargeType" value="Other"
+                @(Model.PostOp.PatientDischargeType == "Other" ? "checked" : "") /> Other
+        </div>
+
+        <div class="col-md-6">
+            <label>Time:</label>
+            <input name="PatientDischargeTime"
+                   id="PatientDischargeTime"
+                   value="@Model.PostOp.PatientDischargeTime"
+                   class="form-control" />
+        </div>
+    </div>
+
+</div>
+
+    </div>
+</form>
+
